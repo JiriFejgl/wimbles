@@ -30,7 +30,6 @@
     padding: 24px 16px 48px;
   }
 
-  /* ── CARD ── */
   .card {
     max-width: 680px;
     margin: 0 auto;
@@ -41,7 +40,6 @@
     overflow: hidden;
   }
 
-  /* ── HEADER ── */
   .header {
     background: var(--green);
     padding: 32px 32px 24px;
@@ -49,7 +47,6 @@
     overflow: hidden;
   }
   .header::before {
-    /* court-line texture */
     content: '';
     position: absolute;
     inset: 0;
@@ -60,7 +57,6 @@
   .header-inner { position: relative; z-index: 1; text-align: center; }
 
   .eyebrow {
-    font-family: 'Inter', sans-serif;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: .15em;
@@ -74,7 +70,6 @@
     font-weight: 700;
     color: #fff;
     line-height: 1;
-    letter-spacing: -.01em;
   }
   .title span { color: var(--gold); }
   .subtitle {
@@ -86,7 +81,6 @@
     line-height: 1.5;
   }
 
-  /* ── DEADLINE BANNER ── */
   .deadline {
     background: var(--purple);
     color: #fff;
@@ -94,14 +88,11 @@
     padding: 10px 16px;
     font-size: 13px;
     font-weight: 500;
-    letter-spacing: .01em;
   }
   .deadline strong { color: var(--gold); }
 
-  /* ── BODY ── */
   .body { padding: 28px 28px 0; }
 
-  /* ── SECTION ── */
   .section { margin-bottom: 28px; }
 
   .section-label {
@@ -115,6 +106,7 @@
     font-size: 17px;
     font-weight: 700;
     color: var(--green);
+    white-space: nowrap;
   }
   .section-label::after {
     content: '';
@@ -123,7 +115,6 @@
     background: var(--border);
   }
 
-  /* ── FIELD ── */
   .field { margin-bottom: 12px; }
   .field label {
     display: block;
@@ -137,9 +128,33 @@
   .field-row { display: flex; gap: 10px; }
   .field-row .field { flex: 1; margin-bottom: 0; }
 
+  /* ── NAME PICKLIST ── */
+  .name-pick { display: flex; gap: 10px; }
+  .name-btn {
+    flex: 1;
+    padding: 11px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    background: var(--cream);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    transition: all .15s;
+    text-align: center;
+  }
+  .name-btn:hover { border-color: var(--purple-light); }
+  .name-btn.active {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: #fff;
+  }
+
+  /* ── AUTOCOMPLETE ── */
+  .autocomplete-wrap { position: relative; }
   input[type="text"],
-  input[type="number"],
-  select {
+  input[type="number"] {
     width: 100%;
     padding: 9px 12px;
     border: 1.5px solid var(--border);
@@ -149,21 +164,48 @@
     color: var(--ink);
     background: var(--cream);
     transition: border-color .15s, background .15s;
-    -webkit-appearance: none;
   }
   input[type="text"]:focus,
-  input[type="number"]:focus,
-  select:focus {
+  input[type="number"]:focus {
     outline: none;
     border-color: var(--purple);
     background: #fff;
   }
 
-  /* ── TOGGLE ── */
-  .toggle-group {
-    display: flex;
-    gap: 8px;
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: #fff;
+    border: 1.5px solid var(--purple);
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
   }
+  .dropdown.open { display: block; }
+  .dropdown-item {
+    padding: 9px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0ece4;
+    transition: background .1s;
+  }
+  .dropdown-item:last-child { border-bottom: none; }
+  .dropdown-item:hover, .dropdown-item.highlighted { background: var(--green-pale); }
+  .dropdown-item .seed-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--purple);
+    margin-left: 6px;
+    opacity: .7;
+  }
+
+  /* ── TOGGLE ── */
+  .toggle-group { display: flex; gap: 8px; }
   .toggle-btn {
     flex: 1;
     padding: 9px;
@@ -177,31 +219,12 @@
     font-family: 'Inter', sans-serif;
     color: var(--muted);
   }
-  .toggle-btn.active-yes {
-    background: var(--green-pale);
-    border-color: var(--green);
-    color: var(--green);
-  }
-  .toggle-btn.active-no {
-    background: #fdf0f0;
-    border-color: #c0392b;
-    color: #c0392b;
-  }
+  .toggle-btn.active-yes { background: var(--green-pale); border-color: var(--green); color: var(--green); }
+  .toggle-btn.active-no  { background: #fdf0f0; border-color: #c0392b; color: #c0392b; }
 
-  /* ── HINT ── */
-  .hint {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 4px;
-    line-height: 1.4;
-  }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
 
-  /* ── DIVIDER ── */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0 0 28px;
-  }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 28px; }
 
   /* ── SCORING ── */
   .scoring {
@@ -211,46 +234,17 @@
     padding: 20px;
     margin-bottom: 28px;
   }
-  .scoring-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--green);
-    margin-bottom: 14px;
-  }
-  .scoring-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
+  .scoring-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--green); margin-bottom: 14px; }
+  .scoring-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 480px) { .scoring-grid { grid-template-columns: 1fr; } }
 
-  .score-block h4 {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--purple);
-    margin-bottom: 6px;
-  }
-  .score-block ul {
-    list-style: none;
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--ink);
-  }
+  .score-block h4 { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; }
+  .score-block ul { list-style: none; font-size: 13px; line-height: 1.8; }
   .score-block ul li { display: flex; justify-content: space-between; gap: 8px; }
-  .score-block ul li .pts {
-    font-weight: 600;
-    color: var(--green);
-    white-space: nowrap;
-  }
+  .score-block ul li .pts { font-weight: 600; color: var(--green); white-space: nowrap; }
 
   /* ── SUBMIT ── */
-  .submit-area {
-    padding: 0 28px 28px;
-    text-align: center;
-  }
+  .submit-area { padding: 0 28px 28px; text-align: center; }
   .submit-btn {
     background: var(--purple);
     color: #fff;
@@ -267,58 +261,17 @@
   }
   .submit-btn:hover { background: var(--purple-light); }
 
-  /* ── RESULT CARD ── */
-  .result-card {
-    display: none;
-    background: var(--cream);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 20px;
-    margin: 0 28px 28px;
-    text-align: left;
-  }
+  /* ── RESULT ── */
+  .result-card { display: none; background: var(--cream); border: 1px solid var(--border); border-radius: 3px; padding: 20px; margin: 0 28px 28px; }
   .result-card.show { display: block; }
-  .result-card h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    color: var(--purple);
-    margin-bottom: 12px;
-  }
-  .result-entry {
-    font-size: 13px;
-    line-height: 1.9;
-    color: var(--ink);
-    border-top: 1px solid var(--border);
-    padding-top: 10px;
-  }
+  .result-card h3 { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--purple); margin-bottom: 12px; }
+  .result-entry { font-size: 13px; line-height: 1.9; border-top: 1px solid var(--border); padding-top: 10px; }
   .result-entry span { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; display: block; }
   .result-entry strong { font-size: 15px; }
-
-  .copy-btn {
-    margin-top: 14px;
-    background: none;
-    border: 1.5px solid var(--purple);
-    color: var(--purple);
-    border-radius: 3px;
-    padding: 8px 20px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: all .15s;
-    width: 100%;
-  }
+  .copy-btn { margin-top: 14px; background: none; border: 1.5px solid var(--purple); color: var(--purple); border-radius: 3px; padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all .15s; width: 100%; }
   .copy-btn:hover { background: var(--purple); color: #fff; }
 
-  /* ── FOOTER ── */
-  .footer {
-    background: var(--green);
-    padding: 14px;
-    text-align: center;
-    font-size: 12px;
-    color: rgba(255,255,255,.55);
-    letter-spacing: .04em;
-  }
+  .footer { background: var(--green); padding: 14px; text-align: center; font-size: 12px; color: rgba(255,255,255,.55); letter-spacing: .04em; }
   .footer strong { color: rgba(255,255,255,.8); }
 </style>
 </head>
@@ -344,8 +297,12 @@
     <div class="section">
       <div class="section-label"><span class="section-label-text">Player Details</span></div>
       <div class="field">
-        <label>Your Name</label>
-        <input type="text" id="playerName" placeholder="e.g. Amie">
+        <label>Who are you?</label>
+        <div class="name-pick">
+          <button class="name-btn" onclick="pickName('Jiri', this)">🎾 Jiri</button>
+          <button class="name-btn" onclick="pickName('Amie', this)">🎾 Amie</button>
+          <button class="name-btn" onclick="pickName('Kate', this)">🎾 Kate</button>
+        </div>
       </div>
     </div>
 
@@ -357,13 +314,19 @@
 
       <div class="field">
         <label>Men's Singles Winner</label>
-        <input type="text" id="mensWinner" placeholder="e.g. Carlos Alcaraz">
+        <div class="autocomplete-wrap">
+          <input type="text" id="mensWinner" placeholder="Start typing a player's name…" autocomplete="off" oninput="showSuggestions('mensWinner', 'mensWinnerDrop', menPlayers)" onkeydown="handleKey(event,'mensWinnerDrop','mensWinner')" onfocus="showSuggestions('mensWinner','mensWinnerDrop',menPlayers)" onblur="delayClose('mensWinnerDrop')">
+          <div class="dropdown" id="mensWinnerDrop"></div>
+        </div>
       </div>
 
       <div class="field">
         <label>Men's Wildcard Pick <em style="font-style:normal;color:var(--gold)">★</em></label>
-        <input type="text" id="mensWildcard" placeholder="Unseeded or long-shot — go bold!">
-        <div class="hint">Wildcard = unseeded or unseeded-tier player you think will go deep.</div>
+        <div class="autocomplete-wrap">
+          <input type="text" id="mensWildcard" placeholder="Unseeded or long-shot — go bold!" autocomplete="off" oninput="showSuggestions('mensWildcard','mensWildcardDrop',menPlayers)" onkeydown="handleKey(event,'mensWildcardDrop','mensWildcard')" onfocus="showSuggestions('mensWildcard','mensWildcardDrop',menPlayers)" onblur="delayClose('mensWildcardDrop')">
+          <div class="dropdown" id="mensWildcardDrop"></div>
+        </div>
+        <div class="hint">Wildcard = unseeded or long-shot player you think will go deep.</div>
       </div>
     </div>
 
@@ -375,12 +338,18 @@
 
       <div class="field">
         <label>Women's Singles Winner</label>
-        <input type="text" id="womensWinner" placeholder="e.g. Aryna Sabalenka">
+        <div class="autocomplete-wrap">
+          <input type="text" id="womensWinner" placeholder="Start typing a player's name…" autocomplete="off" oninput="showSuggestions('womensWinner','womensWinnerDrop',womenPlayers)" onkeydown="handleKey(event,'womensWinnerDrop','womensWinner')" onfocus="showSuggestions('womensWinner','womensWinnerDrop',womenPlayers)" onblur="delayClose('womensWinnerDrop')">
+          <div class="dropdown" id="womensWinnerDrop"></div>
+        </div>
       </div>
 
       <div class="field">
         <label>Women's Wildcard Pick <em style="font-style:normal;color:var(--gold)">★</em></label>
-        <input type="text" id="womensWildcard" placeholder="Unseeded or long-shot — go bold!">
+        <div class="autocomplete-wrap">
+          <input type="text" id="womensWildcard" placeholder="Unseeded or long-shot — go bold!" autocomplete="off" oninput="showSuggestions('womensWildcard','womensWildcardDrop',womenPlayers)" onkeydown="handleKey(event,'womensWildcardDrop','womensWildcard')" onfocus="showSuggestions('womensWildcard','womensWildcardDrop',womenPlayers)" onblur="delayClose('womensWildcardDrop')">
+          <div class="dropdown" id="womensWildcardDrop"></div>
+        </div>
       </div>
     </div>
 
@@ -407,7 +376,7 @@
 
       <div class="field">
         <label>Fastest Serve — Player</label>
-        <input type="text" id="servePlayer" placeholder="e.g. Nick Kyrgios">
+        <input type="text" id="servePlayer" placeholder="e.g. Ben Shelton">
       </div>
       <div class="field">
         <label>Fastest Serve — Speed (mph)</label>
@@ -431,10 +400,10 @@
       </div>
 
       <div class="field" style="margin-top:14px">
-        <label>Will ELC (Electronic Line Calling) malfunction? <span style="color:var(--gold)">+4 pts</span></label>
-        <div class="toggle-group" id="elcGroup">
-          <button class="toggle-btn" onclick="toggle('elcGroup', 'Y', this)">⚡ Yes — chaos!</button>
-          <button class="toggle-btn" onclick="toggle('elcGroup', 'N', this)">🙅 No — it'll hold</button>
+        <label>Will a pigeon land on the lawn during play? <span style="color:var(--gold)">+2 pts</span></label>
+        <div class="toggle-group" id="pigeonGroup">
+          <button class="toggle-btn" onclick="toggle('pigeonGroup', 'Y', this)">🐦 Yes — it'll happen</button>
+          <button class="toggle-btn" onclick="toggle('pigeonGroup', 'N', this)">🙅 No — birds know better</button>
         </div>
       </div>
     </div>
@@ -479,12 +448,18 @@
             <li><span>3rd closest</span> <span class="pts">6 pts</span></li>
           </ul>
         </div>
+        <div class="score-block">
+          <h4>Bonus Bets</h4>
+          <ul>
+            <li><span>Kate sighting (correct)</span> <span class="pts">+4 pts</span></li>
+            <li><span>Pigeon on the lawn (correct)</span> <span class="pts">+2 pts</span></li>
+          </ul>
+        </div>
       </div>
     </div>
 
   </div><!-- /body -->
 
-  <!-- RESULT (shown after submit) -->
   <div class="result-card" id="resultCard">
     <h3>🎾 Your Entry</h3>
     <div class="result-entry" id="resultContent"></div>
@@ -502,39 +477,237 @@
 </div>
 
 <script>
-  const state = { kate: null, elc: null };
+  // ── PLAYER DATA ──────────────────────────────────────────────────────────────
+  // Seeds in brackets, WC = wildcard, Q = qualifier, LL = lucky loser
+  const menPlayers = [
+    { name: "Jannik Sinner", tag: "[1]" },
+    { name: "Alexander Zverev", tag: "[2]" },
+    { name: "Félix Auger-Aliassime", tag: "[3]" },
+    { name: "Ben Shelton", tag: "[4]" },
+    { name: "Alex de Minaur", tag: "[5]" },
+    { name: "Taylor Fritz", tag: "[6]" },
+    { name: "Novak Djokovic", tag: "[7]" },
+    { name: "Daniil Medvedev", tag: "[8]" },
+    { name: "Flavio Cobolli", tag: "[9]" },
+    { name: "Alexander Bublik", tag: "[10]" },
+    { name: "Casper Ruud", tag: "[11]" },
+    { name: "Andrey Rublev", tag: "[12]" },
+    { name: "Jiří Lehečka", tag: "[13]" },
+    { name: "Luciano Darderi", tag: "[14]" },
+    { name: "Jakub Menšík", tag: "[15]" },
+    { name: "Learner Tien", tag: "[16]" },
+    { name: "Frances Tiafoe", tag: "[17]" },
+    { name: "Francisco Cerúndolo", tag: "[18]" },
+    { name: "Karen Khachanov", tag: "[19]" },
+    { name: "Arthur Fils", tag: "[20]" },
+    { name: "Tommy Paul", tag: "[21]" },
+    { name: "Alejandro Davidovich Fokina", tag: "[22]" },
+    { name: "Rafael Jódar", tag: "[23]" },
+    { name: "João Fonseca", tag: "[24]" },
+    { name: "Hubert Hurkacz", tag: "[25]" },
+    { name: "Sebastian Baez", tag: "[26]" },
+    { name: "Ugo Humbert", tag: "[27]" },
+    { name: "Brandon Nakashima", tag: "[28]" },
+    { name: "Tomas Martin Etcheverry", tag: "[29]" },
+    { name: "Alejandro Tabilo", tag: "[30]" },
+    { name: "Ivan Buse", tag: "[31]" },
+    { name: "Matteo Arnaldi", tag: "[32]" },
+    // Unseeded / notable
+    { name: "Matteo Berrettini", tag: "" },
+    { name: "Grigor Dimitrov", tag: "WC" },
+    { name: "Stan Wawrinka", tag: "WC" },
+    { name: "Jack Draper", tag: "" },
+    { name: "Denis Shapovalov", tag: "" },
+    { name: "Pablo Carreno Busta", tag: "" },
+    { name: "Adrian Mannarino", tag: "" },
+    { name: "Roman Andres Burruchaga", tag: "" },
+    { name: "Nuno Borges", tag: "" },
+    { name: "Aleksandr Vukic", tag: "" },
+    { name: "Yannick Hanfmann", tag: "" },
+    { name: "Tallon Griekspoor", tag: "" },
+    { name: "James Duckworth", tag: "" },
+    { name: "Mariano Navone", tag: "" },
+    { name: "Giovanni Mpetshi Perricard", tag: "" },
+    { name: "Sho Shimabukuro", tag: "" },
+    { name: "Zizou Bergs", tag: "" },
+    { name: "Damir Dzumhur", tag: "" },
+    { name: "Patrick Kypson", tag: "" },
+    { name: "Mackenzie McDonald", tag: "Q" },
+    { name: "Benjamin Bonzi", tag: "" },
+    { name: "Gabriel Diallo", tag: "" },
+    { name: "Lorenzo Sonego", tag: "" },
+    { name: "Terence Atmane", tag: "" },
+    { name: "Vit Kopriva", tag: "" },
+    { name: "Jan Choinski", tag: "" },
+    { name: "Thanasi Kokkinakis", tag: "" },
+    { name: "Alexi Popyrin", tag: "" },
+    { name: "Alex Molcan", tag: "" },
+    { name: "Daniel Altmaier", tag: "" },
+    { name: "Alex Michelsen", tag: "" },
+    { name: "Jacob Fearnley", tag: "WC" },
+    { name: "Jaume Munar", tag: "" },
+    { name: "Quentin Halys", tag: "" },
+    { name: "Corentin Moutet", tag: "" },
+    { name: "Marcos Giron", tag: "" },
+    { name: "Alex Bockx", tag: "" },
+    { name: "Billy Harris", tag: "Q" },
+    { name: "Harry Wendelken", tag: "WC" },
+    { name: "Toby Samuel", tag: "WC" },
+    { name: "Arthur Fery", tag: "WC" },
+    { name: "Felix Gill", tag: "WC" },
+    { name: "Kamil Majchrzak", tag: "" },
+    { name: "Pablo Llamas Ruiz", tag: "LL" },
+    { name: "Zachary Svajda", tag: "" },
+    { name: "Otto Virtanen", tag: "Q" },
+    { name: "Tristan Boyer", tag: "" },
+    { name: "Jaime Faria", tag: "Q" },
+    { name: "Raphael Collignon", tag: "" },
+    { name: "Titouan Droguet", tag: "" },
+    { name: "Valentin Royer", tag: "" },
+    { name: "Kyrian Jacquet", tag: "Q" },
+    { name: "Vilius Gaubas", tag: "Q" },
+    { name: "Dane Sweeny", tag: "Q" },
+  ];
 
+  const womenPlayers = [
+    { name: "Aryna Sabalenka", tag: "[1]" },
+    { name: "Iga Świątek", tag: "[2]" },
+    { name: "Elena Rybakina", tag: "[3]" },
+    { name: "Coco Gauff", tag: "[4]" },
+    { name: "Mirra Andreeva", tag: "[5]" },
+    { name: "Amanda Anisimova", tag: "[6]" },
+    { name: "Jessica Pegula", tag: "[7]" },
+    { name: "Barbora Krejčíková", tag: "[8]" },
+    { name: "Daria Kasatkina", tag: "[9]" },
+    { name: "Liudmila Samsonova", tag: "[10]" },
+    { name: "Jasmine Paolini", tag: "[11]" },
+    { name: "Ekaterina Alexandrova", tag: "[12]" },
+    { name: "Naomi Osaka", tag: "[14]" },
+    { name: "Emma Navarro", tag: "[15]" },
+    { name: "Iva Jovic", tag: "[16]" },
+    { name: "Madison Keys", tag: "[17]" },
+    { name: "Ann Li", tag: "[18]" },
+    { name: "Maja Chwalinska", tag: "[20]" },
+    { name: "Tommy Paul", tag: "[21]" },
+    { name: "Emma Navarro", tag: "[23]" },
+    { name: "Madison Keys", tag: "[26]" },
+    { name: "Ann Li", tag: "[28]" },
+    { name: "Alex Eala", tag: "[29]" },
+    // Notable unseeded / wildcards
+    { name: "Serena Williams", tag: "WC" },
+    { name: "Venus Williams", tag: "" },
+    { name: "Harriet Dart", tag: "WC" },
+    { name: "Alicia Dudeney", tag: "WC" },
+    { name: "Hannah Klugman", tag: "WC" },
+    { name: "Mika Stojsavljevic", tag: "WC" },
+    { name: "Katie Swan", tag: "WC" },
+    { name: "Mimi Xu", tag: "WC" },
+    { name: "Maya Joint", tag: "" },
+    { name: "Lina Gjorcheska", tag: "" },
+    { name: "Paula Badosa", tag: "" },
+    { name: "Nadia Podoroska", tag: "" },
+    { name: "Hanna Vandewinkel", tag: "" },
+    { name: "Darja Vidmanova", tag: "" },
+    { name: "Francesca Jones", tag: "" },
+    { name: "Victoria Jimenez Kasintseva", tag: "" },
+  ];
+
+  // ── STATE ────────────────────────────────────────────────────────────────────
+  const state = { name: null, kate: null, pigeon: null };
+  let highlightIdx = -1;
+
+  // ── NAME PICK ────────────────────────────────────────────────────────────────
+  function pickName(name, btn) {
+    state.name = name;
+    document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // ── TOGGLE ───────────────────────────────────────────────────────────────────
   function toggle(groupId, value, btn) {
-    const group = document.getElementById(groupId);
-    const key = groupId === 'kateGroup' ? 'kate' : 'elc';
+    const key = groupId === 'kateGroup' ? 'kate' : 'pigeon';
     state[key] = value;
-
-    group.querySelectorAll('.toggle-btn').forEach(b => {
+    document.getElementById(groupId).querySelectorAll('.toggle-btn').forEach(b => {
       b.classList.remove('active-yes', 'active-no');
     });
     btn.classList.add(value === 'Y' ? 'active-yes' : 'active-no');
   }
 
+  // ── AUTOCOMPLETE ─────────────────────────────────────────────────────────────
+  function showSuggestions(inputId, dropId, players) {
+    const input = document.getElementById(inputId);
+    const drop  = document.getElementById(dropId);
+    const q = input.value.trim().toLowerCase();
+    highlightIdx = -1;
+
+    const matches = q.length === 0
+      ? players
+      : players.filter(p => p.name.toLowerCase().includes(q));
+
+    if (matches.length === 0) { drop.classList.remove('open'); return; }
+
+    drop.innerHTML = matches.slice(0, 12).map((p, i) =>
+      `<div class="dropdown-item" data-name="${p.name}" onmousedown="selectPlayer('${inputId}','${dropId}','${p.name.replace(/'/g,"\\'")}')">
+        ${p.name}${p.tag ? `<span class="seed-tag">${p.tag}</span>` : ''}
+      </div>`
+    ).join('');
+    drop.classList.add('open');
+  }
+
+  function selectPlayer(inputId, dropId, name) {
+    document.getElementById(inputId).value = name;
+    document.getElementById(dropId).classList.remove('open');
+    highlightIdx = -1;
+  }
+
+  function delayClose(dropId) {
+    setTimeout(() => document.getElementById(dropId).classList.remove('open'), 200);
+  }
+
+  function handleKey(e, dropId, inputId) {
+    const drop  = document.getElementById(dropId);
+    const items = drop.querySelectorAll('.dropdown-item');
+    if (!drop.classList.contains('open') || items.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      highlightIdx = Math.min(highlightIdx + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      highlightIdx = Math.max(highlightIdx - 1, 0);
+    } else if (e.key === 'Enter' && highlightIdx >= 0) {
+      e.preventDefault();
+      document.getElementById(inputId).value = items[highlightIdx].dataset.name;
+      drop.classList.remove('open');
+      highlightIdx = -1;
+      return;
+    } else if (e.key === 'Escape') {
+      drop.classList.remove('open'); return;
+    } else { return; }
+
+    items.forEach((item, i) => item.classList.toggle('highlighted', i === highlightIdx));
+  }
+
+  // ── SUBMIT ───────────────────────────────────────────────────────────────────
   function val(id) { return document.getElementById(id).value.trim(); }
 
   function submitEntry() {
-    const name       = val('playerName');
-    const mW         = val('mensWinner');
-    const mWc        = val('mensWildcard');
-    const wW         = val('womensWinner');
-    const wWc        = val('womensWildcard');
-    const lPlayers   = val('longestPlayers');
-    const lRound     = val('longestRound');
-    const lMins      = val('longestMins');
-    const sPlayer    = val('servePlayer');
-    const sMph       = val('serveMph');
-    const kate       = state.kate;
-    const elc        = state.elc;
+    if (!state.name) { alert('Please pick your name first!'); return; }
 
-    if (!name) { alert('Please enter your name!'); return; }
+    const mW       = val('mensWinner');
+    const mWc      = val('mensWildcard');
+    const wW       = val('womensWinner');
+    const wWc      = val('womensWildcard');
+    const lPlayers = val('longestPlayers');
+    const lRound   = val('longestRound');
+    const lMins    = val('longestMins');
+    const sPlayer  = val('servePlayer');
+    const sMph     = val('serveMph');
+    const kate     = state.kate;
+    const pigeon   = state.pigeon;
 
     const lines = [
-      `🎾 THE WIMBLES 2026 — ${name.toUpperCase()}`,
+      `🎾 THE WIMBLES 2026 — ${state.name.toUpperCase()}`,
       ``,
       `🟢 MEN'S DRAW`,
       `  Winner: ${mW || '—'}`,
@@ -550,14 +723,11 @@
       ``,
       `👑 BONUS BETS`,
       `  Kate sighting: ${kate === 'Y' ? 'Yes 👸' : kate === 'N' ? 'No 🚫' : '—'}`,
-      `  ELC malfunction: ${elc === 'Y' ? 'Yes ⚡' : elc === 'N' ? 'No 🙅' : '—'}`,
+      `  Pigeon on the lawn: ${pigeon === 'Y' ? 'Yes 🐦' : pigeon === 'N' ? 'No 🙅' : '—'}`,
     ];
 
-    const text = lines.join('\n');
-
-    // Build result card HTML
     const html = `
-      <span>Name</span><strong>${name}</strong>
+      <span>Name</span><strong>${state.name}</strong>
       <br><br>
       <span>Men's Winner</span><strong>${mW || '—'}</strong>
       <br><span>Men's Wildcard ★</span><strong>${mWc || '—'}</strong>
@@ -569,14 +739,14 @@
       <br><span>Fastest Serve</span><strong>${sPlayer || '—'} · ${sMph ? sMph + ' mph' : '—'}</strong>
       <br><br>
       <span>Kate sighting?</span><strong>${kate === 'Y' ? 'Yes 👸' : kate === 'N' ? 'No 🚫' : '—'}</strong>
-      <br><span>ELC malfunction?</span><strong>${elc === 'Y' ? 'Yes ⚡' : elc === 'N' ? 'No 🙅' : '—'}</strong>
+      <br><span>Pigeon on the lawn?</span><strong>${pigeon === 'Y' ? 'Yes 🐦' : pigeon === 'N' ? 'No 🙅' : '—'}</strong>
     `;
-    document.getElementById('resultContent').innerHTML = html;
-    document.getElementById('resultCard').classList.add('show');
-    document.getElementById('resultCard').dataset.text = text;
 
-    // Scroll to result
-    document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('resultContent').innerHTML = html;
+    const card = document.getElementById('resultCard');
+    card.classList.add('show');
+    card.dataset.text = lines.join('\n');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function copyEntry() {
