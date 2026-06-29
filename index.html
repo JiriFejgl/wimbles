@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wimbles 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #4B2C82;
+    --purple-light: #6B4BA4;
+    --green: #006633;
+    --green-light: #1a7a47;
+    --green-pale: #e8f4ed;
+    --cream: #F9F6EF;
+    --gold: #C9A84C;
+    --ink: #1a1a1a;
+    --muted: #666;
+    --border: #ddd6c8;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.10), 0 1px 4px rgba(0,0,0,.06);
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--green);
+    padding: 32px 32px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    /* court-line texture */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 1px, transparent 1px, transparent 60px),
+      repeating-linear-gradient(0deg,  rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 1px, transparent 1px, transparent 60px);
+  }
+  .header-inner { position: relative; z-index: 1; text-align: center; }
+
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 8px;
+  }
+  .title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 8vw, 52px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -.01em;
+  }
+  .title span { color: var(--gold); }
+  .subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(255,255,255,.75);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ── DEADLINE BANNER ── */
+  .deadline {
+    background: var(--purple);
+    color: #fff;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .01em;
+  }
+  .deadline strong { color: var(--gold); }
+
+  /* ── BODY ── */
+  .body { padding: 28px 28px 0; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 28px; }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-label-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── FIELD ── */
+  .field { margin-bottom: 12px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .field-row { display: flex; gap: 10px; }
+  .field-row .field { flex: 1; margin-bottom: 0; }
+
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    transition: border-color .15s, background .15s;
+    -webkit-appearance: none;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--purple);
+    background: #fff;
+  }
+
+  /* ── TOGGLE ── */
+  .toggle-group {
+    display: flex;
+    gap: 8px;
+  }
+  .toggle-btn {
+    flex: 1;
+    padding: 9px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    background: var(--cream);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Inter', sans-serif;
+    color: var(--muted);
+  }
+  .toggle-btn.active-yes {
+    background: var(--green-pale);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .toggle-btn.active-no {
+    background: #fdf0f0;
+    border-color: #c0392b;
+    color: #c0392b;
+  }
+
+  /* ── HINT ── */
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 0 28px;
+  }
+
+  /* ── SCORING ── */
+  .scoring {
+    background: var(--green-pale);
+    border: 1px solid #c5dece;
+    border-radius: 3px;
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+  .scoring-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 14px;
+  }
+  .scoring-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 480px) { .scoring-grid { grid-template-columns: 1fr; } }
+
+  .score-block h4 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 6px;
+  }
+  .score-block ul {
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+  .score-block ul li { display: flex; justify-content: space-between; gap: 8px; }
+  .score-block ul li .pts {
+    font-weight: 600;
+    color: var(--green);
+    white-space: nowrap;
+  }
+
+  /* ── SUBMIT ── */
+  .submit-area {
+    padding: 0 28px 28px;
+    text-align: center;
+  }
+  .submit-btn {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 14px 40px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    letter-spacing: .02em;
+    transition: background .15s;
+  }
+  .submit-btn:hover { background: var(--purple-light); }
+
+  /* ── RESULT CARD ── */
+  .result-card {
+    display: none;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 20px;
+    margin: 0 28px 28px;
+    text-align: left;
+  }
+  .result-card.show { display: block; }
+  .result-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--purple);
+    margin-bottom: 12px;
+  }
+  .result-entry {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--ink);
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  .result-entry span { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; display: block; }
+  .result-entry strong { font-size: 15px; }
+
+  .copy-btn {
+    margin-top: 14px;
+    background: none;
+    border: 1.5px solid var(--purple);
+    color: var(--purple);
+    border-radius: 3px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all .15s;
+    width: 100%;
+  }
+  .copy-btn:hover { background: var(--purple); color: #fff; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--green);
+    padding: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255,255,255,.55);
+    letter-spacing: .04em;
+  }
+  .footer strong { color: rgba(255,255,255,.8); }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="eyebrow">The All England Lawn Tennis Club · 2026</div>
+      <div class="title">The <span>Wimbles</span></div>
+      <div class="subtitle">Submit your predictions before end of Day 1.<br>May the grass be ever in your favor 🌱</div>
+    </div>
+  </div>
+
+  <div class="deadline">
+    Entries close: <strong>End of Day 1, Monday 30 June</strong>
+  </div>
+
+  <div class="body">
+
+    <!-- YOUR NAME -->
+    <div class="section">
+      <div class="section-label"><span class="section-label-text">Player Details</span></div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="playerName" placeholder="e.g. Amie">
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- MEN'S DRAW -->
+    <div class="section">
+      <div class="section-label"><span class="section-label-text">🎾 Men's Draw</span></div>
+
+      <div class="field">
+        <label>Men's Singles Winner</label>
+        <input type="text" id="mensWinner" placeholder="e.g. Carlos Alcaraz">
+      </div>
+
+      <div class="field">
+        <label>Men's Wildcard Pick <em style="font-style:normal;color:var(--gold)">★</em></label>
+        <input type="text" id="mensWildcard" placeholder="Unseeded or long-shot — go bold!">
+        <div class="hint">Wildcard = unseeded or unseeded-tier player you think will go deep.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- WOMEN'S DRAW -->
+    <div class="section">
+      <div class="section-label"><span class="section-label-text">🎾 Women's Draw</span></div>
+
+      <div class="field">
+        <label>Women's Singles Winner</label>
+        <input type="text" id="womensWinner" placeholder="e.g. Aryna Sabalenka">
+      </div>
+
+      <div class="field">
+        <label>Women's Wildcard Pick <em style="font-style:normal;color:var(--gold)">★</em></label>
+        <input type="text" id="womensWildcard" placeholder="Unseeded or long-shot — go bold!">
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- SPECIAL BETS -->
+    <div class="section">
+      <div class="section-label"><span class="section-label-text">⚡ Special Bets</span></div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Longest Match — Players</label>
+          <input type="text" id="longestPlayers" placeholder="e.g. Djokovic vs Sinner">
+        </div>
+        <div class="field">
+          <label>Longest Match — Round</label>
+          <input type="text" id="longestRound" placeholder="e.g. QF">
+        </div>
+      </div>
+      <div class="field">
+        <label>Longest Match — Duration</label>
+        <input type="number" id="longestMins" placeholder="Your guess in minutes (e.g. 312)" min="60" max="600">
+      </div>
+
+      <div class="field">
+        <label>Fastest Serve — Player</label>
+        <input type="text" id="servePlayer" placeholder="e.g. Nick Kyrgios">
+      </div>
+      <div class="field">
+        <label>Fastest Serve — Speed (mph)</label>
+        <input type="number" id="serveMph" placeholder="Your guess in mph (e.g. 147)" min="100" max="180">
+        <div class="hint">Men's serves regularly hit 130–150 mph — aim high.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- BONUS BETS -->
+    <div class="section">
+      <div class="section-label"><span class="section-label-text">👑 Bonus Bets</span></div>
+
+      <div class="field">
+        <label>Will Kate Middleton make an appearance? <span style="color:var(--gold)">+4 pts</span></label>
+        <div class="toggle-group" id="kateGroup">
+          <button class="toggle-btn" onclick="toggle('kateGroup', 'Y', this)">👸 Yes</button>
+          <button class="toggle-btn" onclick="toggle('kateGroup', 'N', this)">🚫 No</button>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:14px">
+        <label>Will ELC (Electronic Line Calling) malfunction? <span style="color:var(--gold)">+4 pts</span></label>
+        <div class="toggle-group" id="elcGroup">
+          <button class="toggle-btn" onclick="toggle('elcGroup', 'Y', this)">⚡ Yes — chaos!</button>
+          <button class="toggle-btn" onclick="toggle('elcGroup', 'N', this)">🙅 No — it'll hold</button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- SCORING -->
+    <div class="scoring">
+      <div class="scoring-title">🎯 How Points Work</div>
+      <div class="scoring-grid">
+        <div class="score-block">
+          <h4>Singles Picks</h4>
+          <ul>
+            <li><span>Winner</span> <span class="pts">15 pts</span></li>
+            <li><span>Finalist</span> <span class="pts">10 pts</span></li>
+            <li><span>Semi-finalist</span> <span class="pts">5 pts</span></li>
+            <li><span>Quarter-finalist</span> <span class="pts">2 pts</span></li>
+          </ul>
+        </div>
+        <div class="score-block">
+          <h4>Wildcard ★ (–2 penalty)</h4>
+          <ul>
+            <li><span>Winner</span> <span class="pts">15 pts</span></li>
+            <li><span>Finalist</span> <span class="pts">8 pts</span></li>
+            <li><span>Semi-finalist</span> <span class="pts">3 pts</span></li>
+            <li><span>Quarter-finalist</span> <span class="pts">0 pts</span></li>
+          </ul>
+        </div>
+        <div class="score-block">
+          <h4>Longest Match</h4>
+          <ul>
+            <li><span>Closest guess</span> <span class="pts">10 pts</span></li>
+            <li><span>2nd closest</span> <span class="pts">8 pts</span></li>
+            <li><span>3rd closest</span> <span class="pts">6 pts</span></li>
+          </ul>
+        </div>
+        <div class="score-block">
+          <h4>Fastest Serve</h4>
+          <ul>
+            <li><span>Closest (player + speed)</span> <span class="pts">10 pts</span></li>
+            <li><span>2nd closest</span> <span class="pts">8 pts</span></li>
+            <li><span>3rd closest</span> <span class="pts">6 pts</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- RESULT (shown after submit) -->
+  <div class="result-card" id="resultCard">
+    <h3>🎾 Your Entry</h3>
+    <div class="result-entry" id="resultContent"></div>
+    <button class="copy-btn" onclick="copyEntry()">Copy entry to share</button>
+  </div>
+
+  <div class="submit-area">
+    <button class="submit-btn" onclick="submitEntry()">Lock in my predictions →</button>
+  </div>
+
+  <div class="footer">
+    🍓 The Wimbles · Wimbledon 2026 · <strong>Prize: TBD</strong>
+  </div>
+
+</div>
+
+<script>
+  const state = { kate: null, elc: null };
+
+  function toggle(groupId, value, btn) {
+    const group = document.getElementById(groupId);
+    const key = groupId === 'kateGroup' ? 'kate' : 'elc';
+    state[key] = value;
+
+    group.querySelectorAll('.toggle-btn').forEach(b => {
+      b.classList.remove('active-yes', 'active-no');
+    });
+    btn.classList.add(value === 'Y' ? 'active-yes' : 'active-no');
+  }
+
+  function val(id) { return document.getElementById(id).value.trim(); }
+
+  function submitEntry() {
+    const name       = val('playerName');
+    const mW         = val('mensWinner');
+    const mWc        = val('mensWildcard');
+    const wW         = val('womensWinner');
+    const wWc        = val('womensWildcard');
+    const lPlayers   = val('longestPlayers');
+    const lRound     = val('longestRound');
+    const lMins      = val('longestMins');
+    const sPlayer    = val('servePlayer');
+    const sMph       = val('serveMph');
+    const kate       = state.kate;
+    const elc        = state.elc;
+
+    if (!name) { alert('Please enter your name!'); return; }
+
+    const lines = [
+      `🎾 THE WIMBLES 2026 — ${name.toUpperCase()}`,
+      ``,
+      `🟢 MEN'S DRAW`,
+      `  Winner: ${mW || '—'}`,
+      `  Wildcard ★: ${mWc || '—'}`,
+      ``,
+      `🟣 WOMEN'S DRAW`,
+      `  Winner: ${wW || '—'}`,
+      `  Wildcard ★: ${wWc || '—'}`,
+      ``,
+      `⚡ SPECIAL BETS`,
+      `  Longest Match: ${lPlayers || '—'} (${lRound || '?'}) · ${lMins ? lMins + ' mins' : '—'}`,
+      `  Fastest Serve: ${sPlayer || '—'} · ${sMph ? sMph + ' mph' : '—'}`,
+      ``,
+      `👑 BONUS BETS`,
+      `  Kate sighting: ${kate === 'Y' ? 'Yes 👸' : kate === 'N' ? 'No 🚫' : '—'}`,
+      `  ELC malfunction: ${elc === 'Y' ? 'Yes ⚡' : elc === 'N' ? 'No 🙅' : '—'}`,
+    ];
+
+    const text = lines.join('\n');
+
+    // Build result card HTML
+    const html = `
+      <span>Name</span><strong>${name}</strong>
+      <br><br>
+      <span>Men's Winner</span><strong>${mW || '—'}</strong>
+      <br><span>Men's Wildcard ★</span><strong>${mWc || '—'}</strong>
+      <br><br>
+      <span>Women's Winner</span><strong>${wW || '—'}</strong>
+      <br><span>Women's Wildcard ★</span><strong>${wWc || '—'}</strong>
+      <br><br>
+      <span>Longest Match</span><strong>${lPlayers || '—'} (${lRound || '?'}) · ${lMins ? lMins + ' mins' : '—'}</strong>
+      <br><span>Fastest Serve</span><strong>${sPlayer || '—'} · ${sMph ? sMph + ' mph' : '—'}</strong>
+      <br><br>
+      <span>Kate sighting?</span><strong>${kate === 'Y' ? 'Yes 👸' : kate === 'N' ? 'No 🚫' : '—'}</strong>
+      <br><span>ELC malfunction?</span><strong>${elc === 'Y' ? 'Yes ⚡' : elc === 'N' ? 'No 🙅' : '—'}</strong>
+    `;
+    document.getElementById('resultContent').innerHTML = html;
+    document.getElementById('resultCard').classList.add('show');
+    document.getElementById('resultCard').dataset.text = text;
+
+    // Scroll to result
+    document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function copyEntry() {
+    const text = document.getElementById('resultCard').dataset.text;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = 'Copy entry to share', 2000);
+    });
+  }
+</script>
+</body>
+</html>
