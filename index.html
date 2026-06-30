@@ -127,6 +127,8 @@
   }
   .field-row { display: flex; gap: 10px; }
   .field-row .field { flex: 1; margin-bottom: 0; }
+  .field-row-3 { display: flex; gap: 8px; }
+  .field-row-3 .field { flex: 1; margin-bottom: 0; }
 
   /* ── NAME PICKLIST ── */
   .name-pick { display: flex; gap: 10px; }
@@ -181,7 +183,7 @@
     border: 1.5px solid var(--purple);
     border-top: none;
     border-radius: 0 0 3px 3px;
-    max-height: 200px;
+    max-height: 220px;
     overflow-y: auto;
     z-index: 100;
     box-shadow: 0 4px 12px rgba(0,0,0,.12);
@@ -202,6 +204,12 @@
     color: var(--purple);
     margin-left: 6px;
     opacity: .7;
+  }
+  .dropdown-empty {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
   }
 
   /* ── TOGGLE ── */
@@ -242,6 +250,7 @@
   .score-block ul { list-style: none; font-size: 13px; line-height: 1.8; }
   .score-block ul li { display: flex; justify-content: space-between; gap: 8px; }
   .score-block ul li .pts { font-weight: 600; color: var(--green); white-space: nowrap; }
+  .score-block p { font-size: 13px; line-height: 1.6; color: var(--ink); }
 
   /* ── SUBMIT ── */
   .submit-area { padding: 0 28px 28px; text-align: center; }
@@ -359,24 +368,37 @@
     <div class="section">
       <div class="section-label"><span class="section-label-text">⚡ Special Bets</span></div>
 
-      <div class="field-row">
-        <div class="field">
-          <label>Longest Match — Players</label>
-          <input type="text" id="longestPlayers" placeholder="e.g. Djokovic vs Sinner">
-        </div>
-        <div class="field">
-          <label>Longest Match — Round</label>
-          <input type="text" id="longestRound" placeholder="e.g. QF">
-        </div>
-      </div>
       <div class="field">
-        <label>Longest Match — Duration</label>
-        <input type="number" id="longestMins" placeholder="Your guess in minutes (e.g. 312)" min="60" max="600">
+        <label>Longest Match — Duration Guess</label>
+        <div class="field-row-3">
+          <div class="field">
+            <input type="number" id="longestHours" placeholder="Hrs" min="0" max="10">
+          </div>
+          <div class="field">
+            <input type="number" id="longestMinutes" placeholder="Mins" min="0" max="59">
+          </div>
+          <div class="field">
+            <input type="number" id="longestSeconds" placeholder="Secs" min="0" max="59">
+          </div>
+        </div>
+        <div class="hint">Your guess for the total length of the single longest match of the Championships.</div>
+      </div>
+
+      <div class="field">
+        <label>Longest Match — Player You Think Will Be Involved</label>
+        <div class="autocomplete-wrap">
+          <input type="text" id="longestPlayer" placeholder="Any men's or women's player…" autocomplete="off" oninput="showSuggestions('longestPlayer','longestPlayerDrop',allPlayers)" onkeydown="handleKey(event,'longestPlayerDrop','longestPlayer')" onfocus="showSuggestions('longestPlayer','longestPlayerDrop',allPlayers)" onblur="delayClose('longestPlayerDrop')">
+          <div class="dropdown" id="longestPlayerDrop"></div>
+        </div>
+        <div class="hint">Get points if this player ends up in the actual longest match — closest overall duration guess wins the main points.</div>
       </div>
 
       <div class="field">
         <label>Fastest Serve — Player</label>
-        <input type="text" id="servePlayer" placeholder="e.g. Ben Shelton">
+        <div class="autocomplete-wrap">
+          <input type="text" id="servePlayer" placeholder="Any men's or women's player…" autocomplete="off" oninput="showSuggestions('servePlayer','servePlayerDrop',allPlayers)" onkeydown="handleKey(event,'servePlayerDrop','servePlayer')" onfocus="showSuggestions('servePlayer','servePlayerDrop',allPlayers)" onblur="delayClose('servePlayerDrop')">
+          <div class="dropdown" id="servePlayerDrop"></div>
+        </div>
       </div>
       <div class="field">
         <label>Fastest Serve — Speed (mph)</label>
@@ -435,10 +457,11 @@
         <div class="score-block">
           <h4>Longest Match</h4>
           <ul>
-            <li><span>Closest guess</span> <span class="pts">10 pts</span></li>
+            <li><span>Closest duration guess</span> <span class="pts">10 pts</span></li>
             <li><span>2nd closest</span> <span class="pts">8 pts</span></li>
             <li><span>3rd closest</span> <span class="pts">6 pts</span></li>
           </ul>
+          <p style="margin-top:6px">Plus: if your named player was actually in the longest match, <strong>bonus points!</strong></p>
         </div>
         <div class="score-block">
           <h4>Fastest Serve</h4>
@@ -477,140 +500,79 @@
 </div>
 
 <script>
-  // ── PLAYER DATA ──────────────────────────────────────────────────────────────
+  // ── PLAYER DATA (FULL 128-PLAYER DRAWS) ─────────────────────────────────────
   // Seeds in brackets, WC = wildcard, Q = qualifier, LL = lucky loser
   const menPlayers = [
-    { name: "Jannik Sinner", tag: "[1]" },
-    { name: "Alexander Zverev", tag: "[2]" },
-    { name: "Félix Auger-Aliassime", tag: "[3]" },
-    { name: "Ben Shelton", tag: "[4]" },
-    { name: "Alex de Minaur", tag: "[5]" },
-    { name: "Taylor Fritz", tag: "[6]" },
-    { name: "Novak Djokovic", tag: "[7]" },
-    { name: "Daniil Medvedev", tag: "[8]" },
-    { name: "Flavio Cobolli", tag: "[9]" },
-    { name: "Alexander Bublik", tag: "[10]" },
-    { name: "Casper Ruud", tag: "[11]" },
-    { name: "Andrey Rublev", tag: "[12]" },
-    { name: "Jiří Lehečka", tag: "[13]" },
-    { name: "Luciano Darderi", tag: "[14]" },
-    { name: "Jakub Menšík", tag: "[15]" },
-    { name: "Learner Tien", tag: "[16]" },
-    { name: "Frances Tiafoe", tag: "[17]" },
-    { name: "Francisco Cerúndolo", tag: "[18]" },
-    { name: "Karen Khachanov", tag: "[19]" },
-    { name: "Arthur Fils", tag: "[20]" },
-    { name: "Tommy Paul", tag: "[21]" },
-    { name: "Alejandro Davidovich Fokina", tag: "[22]" },
-    { name: "Rafael Jódar", tag: "[23]" },
-    { name: "João Fonseca", tag: "[24]" },
-    { name: "Hubert Hurkacz", tag: "[25]" },
-    { name: "Sebastian Baez", tag: "[26]" },
-    { name: "Ugo Humbert", tag: "[27]" },
-    { name: "Brandon Nakashima", tag: "[28]" },
-    { name: "Tomas Martin Etcheverry", tag: "[29]" },
-    { name: "Alejandro Tabilo", tag: "[30]" },
-    { name: "Ivan Buse", tag: "[31]" },
-    { name: "Matteo Arnaldi", tag: "[32]" },
-    // Unseeded / notable
-    { name: "Matteo Berrettini", tag: "" },
-    { name: "Grigor Dimitrov", tag: "WC" },
-    { name: "Stan Wawrinka", tag: "WC" },
-    { name: "Jack Draper", tag: "" },
-    { name: "Denis Shapovalov", tag: "" },
-    { name: "Pablo Carreno Busta", tag: "" },
-    { name: "Adrian Mannarino", tag: "" },
-    { name: "Roman Andres Burruchaga", tag: "" },
-    { name: "Nuno Borges", tag: "" },
-    { name: "Aleksandr Vukic", tag: "" },
-    { name: "Yannick Hanfmann", tag: "" },
-    { name: "Tallon Griekspoor", tag: "" },
-    { name: "James Duckworth", tag: "" },
-    { name: "Mariano Navone", tag: "" },
-    { name: "Giovanni Mpetshi Perricard", tag: "" },
-    { name: "Sho Shimabukuro", tag: "" },
-    { name: "Zizou Bergs", tag: "" },
-    { name: "Damir Dzumhur", tag: "" },
-    { name: "Patrick Kypson", tag: "" },
-    { name: "Mackenzie McDonald", tag: "Q" },
-    { name: "Benjamin Bonzi", tag: "" },
-    { name: "Gabriel Diallo", tag: "" },
-    { name: "Lorenzo Sonego", tag: "" },
-    { name: "Terence Atmane", tag: "" },
-    { name: "Vit Kopriva", tag: "" },
-    { name: "Jan Choinski", tag: "" },
-    { name: "Thanasi Kokkinakis", tag: "" },
-    { name: "Alexi Popyrin", tag: "" },
-    { name: "Alex Molcan", tag: "" },
-    { name: "Daniel Altmaier", tag: "" },
-    { name: "Alex Michelsen", tag: "" },
-    { name: "Jacob Fearnley", tag: "WC" },
-    { name: "Jaume Munar", tag: "" },
-    { name: "Quentin Halys", tag: "" },
-    { name: "Corentin Moutet", tag: "" },
-    { name: "Marcos Giron", tag: "" },
-    { name: "Alex Bockx", tag: "" },
-    { name: "Billy Harris", tag: "Q" },
-    { name: "Harry Wendelken", tag: "WC" },
-    { name: "Toby Samuel", tag: "WC" },
-    { name: "Arthur Fery", tag: "WC" },
-    { name: "Felix Gill", tag: "WC" },
-    { name: "Kamil Majchrzak", tag: "" },
-    { name: "Pablo Llamas Ruiz", tag: "LL" },
-    { name: "Zachary Svajda", tag: "" },
-    { name: "Otto Virtanen", tag: "Q" },
-    { name: "Tristan Boyer", tag: "" },
-    { name: "Jaime Faria", tag: "Q" },
-    { name: "Raphael Collignon", tag: "" },
-    { name: "Titouan Droguet", tag: "" },
-    { name: "Valentin Royer", tag: "" },
-    { name: "Kyrian Jacquet", tag: "Q" },
-    { name: "Vilius Gaubas", tag: "Q" },
-    { name: "Dane Sweeny", tag: "Q" },
+    {name:"Jannik Sinner",tag:"[1]"},{name:"Miomir Kecmanovic",tag:""},{name:"Nuno Borges",tag:""},{name:"Tristan Boyer",tag:"Q"},
+    {name:"Aleksandar Vukic",tag:""},{name:"Jenson Brooksby",tag:""},{name:"Emilio Nava",tag:""},{name:"Ignacio Buse",tag:"[31]"},
+    {name:"Rafael Jódar",tag:"[23]"},{name:"Felix Gill",tag:"WC"},{name:"Denis Shapovalov",tag:""},{name:"Pablo Carreno Busta",tag:""},
+    {name:"Shintaro Mochizuki",tag:"Q"},{name:"Max Basing",tag:"Q"},{name:"Ethan Quinn",tag:""},{name:"Luciano Darderi",tag:"[14]"},
+    {name:"Casper Ruud",tag:"[11]"},{name:"Hubert Hurkacz",tag:""},{name:"Hamad Medjedovic",tag:""},{name:"Sebastian Ofner",tag:""},
+    {name:"Soonwoo Kwon",tag:"Q"},{name:"Martin Landaluce",tag:""},{name:"Alexandre Muller",tag:""},{name:"Tommy Paul",tag:"[21]"},
+    {name:"Brandon Nakashima",tag:"[28]"},{name:"Jack Pinnington Jones",tag:"WC"},{name:"Jan-Lennard Struff",tag:""},{name:"Sebastian Baez",tag:""},
+    {name:"Camilo Ugo Carabelli",tag:""},{name:"Daniel Merida",tag:""},{name:"Marin Cilic",tag:""},{name:"Daniil Medvedev",tag:"[8]"},
+    {name:"Félix Auger-Aliassime",tag:"[3]"},{name:"Aleksandr Shevchenko",tag:""},{name:"Adam Walton",tag:""},{name:"Dino Prizmic",tag:""},
+    {name:"Adolfo Daniel Vallejo",tag:""},{name:"Nicolas Mejia",tag:"Q"},{name:"Michael Zheng",tag:"Q"},{name:"Cameron Norrie",tag:"[26]"},
+    {name:"Alejandro Davidovich Fokina",tag:"[22]"},{name:"Juan Manuel Cerundolo",tag:""},{name:"Thiago Agustin Tirante",tag:""},{name:"Fabian Marozsan",tag:""},
+    {name:"Luca Van Assche",tag:""},{name:"Marton Fucsovics",tag:""},{name:"Dalibor Svrcina",tag:""},{name:"Learner Tien",tag:"[16]"},
+    {name:"Andrey Rublev",tag:"[12]"},{name:"Roman Safiullin",tag:"Q"},{name:"Aleksandar Kovacevic",tag:""},{name:"Botic van de Zandschulp",tag:""},
+    {name:"Jesper de Jong",tag:""},{name:"Rinky Hijikata",tag:""},{name:"Roberto Bautista Agut",tag:""},{name:"João Fonseca",tag:"[24]"},
+    {name:"Arthur Rinderknech",tag:"[25]"},{name:"Oliver Tarvet",tag:"Q"},{name:"Marco Trungelliti",tag:""},{name:"Martin Damm",tag:""},
+    {name:"Hugo Gaston",tag:"Q"},{name:"Stefanos Tsitsipas",tag:""},{name:"Yibing Wu",tag:""},{name:"Novak Djokovic",tag:"[7]"},
+    {name:"Alex de Minaur",tag:"[5]"},{name:"Roman Andres Burruchaga",tag:""},{name:"Adrian Mannarino",tag:""},{name:"Titouan Droguet",tag:""},
+    {name:"Pablo Llamas Ruiz",tag:"LL"},{name:"Zachary Svajda",tag:""},{name:"Kamil Majchrzak",tag:""},{name:"Alejandro Tabilo",tag:"[30]"},
+    {name:"Karen Khachanov",tag:"[19]"},{name:"Billy Harris",tag:"Q"},{name:"Yannick Hanfmann",tag:""},{name:"Giovanni Mpetshi Perricard",tag:""},
+    {name:"Tallon Griekspoor",tag:""},{name:"James Duckworth",tag:""},{name:"Mariano Navone",tag:""},{name:"Flavio Cobolli",tag:"[9]"},
+    {name:"Jakub Menšík",tag:"[15]"},{name:"Toby Samuel",tag:"WC"},{name:"Dane Sweeny",tag:"Q"},{name:"Grigor Dimitrov",tag:"WC"},
+    {name:"Stan Wawrinka",tag:"WC"},{name:"Matteo Berrettini",tag:""},{name:"Raphael Collignon",tag:""},{name:"Arthur Fils",tag:"[20]"},
+    {name:"Ugo Humbert",tag:"[27]"},{name:"Zizou Bergs",tag:""},{name:"Sho Shimabukuro",tag:""},{name:"Jaime Faria",tag:"Q"},
+    {name:"Damir Dzumhur",tag:""},{name:"Arthur Fery",tag:"WC"},{name:"Otto Virtanen",tag:"Q"},{name:"Ben Shelton",tag:"[4]"},
+    {name:"Taylor Fritz",tag:"[6]"},{name:"Jack Draper",tag:""},{name:"Patrick Kypson",tag:""},{name:"Mackenzie McDonald",tag:"Q"},
+    {name:"Benjamin Bonzi",tag:""},{name:"Gabriel Diallo",tag:""},{name:"Lorenzo Sonego",tag:""},{name:"Tomas Martin Etcheverry",tag:"[29]"},
+    {name:"Frances Tiafoe",tag:"[17]"},{name:"Terence Atmane",tag:""},{name:"Vit Kopriva",tag:""},{name:"Jan Choinski",tag:""},
+    {name:"Kyrian Jacquet",tag:"Q"},{name:"Vilius Gaubas",tag:"Q"},{name:"Thanasi Kokkinakis",tag:""},{name:"Alexander Bublik",tag:"[10]"},
+    {name:"Jiří Lehečka",tag:"[13]"},{name:"Alexei Popyrin",tag:""},{name:"Alex Molcan",tag:""},{name:"Daniel Altmaier",tag:""},
+    {name:"Alex Michelsen",tag:""},{name:"Jacob Fearnley",tag:"WC"},{name:"Jaume Munar",tag:""},{name:"Francisco Cerundolo",tag:"[18]"},
+    {name:"Matteo Arnaldi",tag:"[32]"},{name:"Quentin Halys",tag:""},{name:"Corentin Moutet",tag:""},{name:"Marcos Giron",tag:""},
+    {name:"Valentin Royer",tag:""},{name:"Harry Wendelken",tag:"WC"},{name:"Alexander Blockx",tag:""},{name:"Alexander Zverev",tag:"[2]"},
   ];
 
   const womenPlayers = [
-    { name: "Aryna Sabalenka", tag: "[1]" },
-    { name: "Iga Świątek", tag: "[2]" },
-    { name: "Elena Rybakina", tag: "[3]" },
-    { name: "Coco Gauff", tag: "[4]" },
-    { name: "Mirra Andreeva", tag: "[5]" },
-    { name: "Amanda Anisimova", tag: "[6]" },
-    { name: "Jessica Pegula", tag: "[7]" },
-    { name: "Barbora Krejčíková", tag: "[8]" },
-    { name: "Daria Kasatkina", tag: "[9]" },
-    { name: "Liudmila Samsonova", tag: "[10]" },
-    { name: "Jasmine Paolini", tag: "[11]" },
-    { name: "Ekaterina Alexandrova", tag: "[12]" },
-    { name: "Naomi Osaka", tag: "[14]" },
-    { name: "Emma Navarro", tag: "[15]" },
-    { name: "Iva Jovic", tag: "[16]" },
-    { name: "Madison Keys", tag: "[17]" },
-    { name: "Ann Li", tag: "[18]" },
-    { name: "Maja Chwalinska", tag: "[20]" },
-    { name: "Tommy Paul", tag: "[21]" },
-    { name: "Emma Navarro", tag: "[23]" },
-    { name: "Madison Keys", tag: "[26]" },
-    { name: "Ann Li", tag: "[28]" },
-    { name: "Alex Eala", tag: "[29]" },
-    // Notable unseeded / wildcards
-    { name: "Serena Williams", tag: "WC" },
-    { name: "Venus Williams", tag: "" },
-    { name: "Harriet Dart", tag: "WC" },
-    { name: "Alicia Dudeney", tag: "WC" },
-    { name: "Hannah Klugman", tag: "WC" },
-    { name: "Mika Stojsavljevic", tag: "WC" },
-    { name: "Katie Swan", tag: "WC" },
-    { name: "Mimi Xu", tag: "WC" },
-    { name: "Maya Joint", tag: "" },
-    { name: "Lina Gjorcheska", tag: "" },
-    { name: "Paula Badosa", tag: "" },
-    { name: "Nadia Podoroska", tag: "" },
-    { name: "Hanna Vandewinkel", tag: "" },
-    { name: "Darja Vidmanova", tag: "" },
-    { name: "Francesca Jones", tag: "" },
-    { name: "Victoria Jimenez Kasintseva", tag: "" },
+    {name:"Aryna Sabalenka",tag:"[1]"},{name:"Teodora Kostovic",tag:"Q"},{name:"Oleksandra Oliynykova",tag:""},{name:"McCartney Kessler",tag:""},
+    {name:"Jelena Ostapenko",tag:""},{name:"Harriet Dart",tag:"WC"},{name:"Antonia Ruzic",tag:""},{name:"Emma Raducanu",tag:"[30]"},
+    {name:"Leylah Fernandez",tag:"[22]"},{name:"Janice Tjen",tag:""},{name:"Mimi Xu",tag:"WC"},{name:"Daria Kasatkina",tag:""},
+    {name:"Anastasia Gasanova",tag:"Q"},{name:"Emiliana Arango",tag:""},{name:"Elsa Jacquemot",tag:""},{name:"Naomi Osaka",tag:"[14]"},
+    {name:"Karolina Muchova",tag:"[10]"},{name:"Anastasia Zakharova",tag:""},{name:"Bianca Andreescu",tag:"Q"},{name:"Shuai Zhang",tag:""},
+    {name:"Alycia Parks",tag:""},{name:"Alicia Dudeney",tag:"WC"},{name:"Mananchaya Sawangkaew",tag:"Q"},{name:"Maja Chwalinska",tag:"[20] WC"},
+    {name:"Katerina Siniakova",tag:"[32]"},{name:"Qinwen Zheng",tag:""},{name:"Peyton Stearns",tag:""},{name:"Nikola Bartunkova",tag:""},
+    {name:"Barbora Krejcikova",tag:""},{name:"Hannah Klugman",tag:"WC"},{name:"Magda Linette",tag:""},{name:"Mirra Andreeva",tag:"[5]"},
+    {name:"Jessica Pegula",tag:"[4]"},{name:"Darja Vidmanova",tag:""},{name:"Sara Sorribes Tormo",tag:""},{name:"Victoria Jimenez Kasintseva",tag:""},
+    {name:"Dayana Yastremska",tag:""},{name:"Aoi Ito",tag:""},{name:"Jessica Bouzas Maneiro",tag:""},{name:"Anastasia Potapova",tag:"[27]"},
+    {name:"Ekaterina Alexandrova",tag:"[18]"},{name:"Panna Udvardy",tag:""},{name:"Lanlana Tararudee",tag:""},{name:"Lilli Tagger",tag:""},
+    {name:"Yulia Putintseva",tag:""},{name:"Tatjana Maria",tag:""},{name:"Jaqueline Cristian",tag:""},{name:"Iva Jovic",tag:"[16]"},
+    {name:"Belinda Bencic",tag:"[11]"},{name:"Mika Stojsavljevic",tag:"WC"},{name:"Xinyu Wang",tag:""},{name:"Elisabetta Cocciaretto",tag:""},
+    {name:"Francesca Jones",tag:""},{name:"Diane Parry",tag:""},{name:"Magdalena Frech",tag:""},{name:"Anna Kalinskaya",tag:"[19]"},
+    {name:"Ann Li",tag:"[28]"},{name:"Zeynep Sonmez",tag:""},{name:"Claire Liu",tag:"Q"},{name:"Hanne Vandewinkel",tag:""},
+    {name:"Solana Sierra",tag:""},{name:"Anna Bondar",tag:""},{name:"Tamara Korpatsch",tag:""},{name:"Coco Gauff",tag:"[7]"},
+    {name:"Elina Svitolina",tag:"[8]"},{name:"Daria Snigur",tag:""},{name:"Veronika Erjavec",tag:""},{name:"Leolia Jeanjean",tag:"Q"},
+    {name:"Ajla Tomljanovic",tag:""},{name:"Mariam Bolkvadze",tag:"Q"},{name:"Ashlyn Krueger",tag:"Q"},{name:"Donna Vekic",tag:"[31]"},
+    {name:"Emma Navarro",tag:"[23]"},{name:"Paula Badosa",tag:""},{name:"Oksana Selekhmeteva",tag:""},{name:"Sinja Kraus",tag:""},
+    {name:"Yuliia Starodubtseva",tag:""},{name:"Anna Blinkova",tag:""},{name:"Nadia Podoroska",tag:""},{name:"Marta Kostyuk",tag:"[12]"},
+    {name:"Jasmine Paolini",tag:"[13]"},{name:"Robin Montgomery",tag:"Q"},{name:"Iryna Shymanovich",tag:"Q"},{name:"Viktorija Golubic",tag:""},
+    {name:"Anhelina Kalinina",tag:""},{name:"Kamilla Rakhimova",tag:""},{name:"Maria Sakkari",tag:""},{name:"Clara Tauson",tag:"[24]"},
+    {name:"Alexandra Eala",tag:"[29]"},{name:"Renata Zarazua",tag:""},{name:"Serena Williams",tag:"WC"},{name:"Maya Joint",tag:""},
+    {name:"Tereza Valentova",tag:""},{name:"Karolina Pliskova",tag:""},{name:"Taylor Townsend",tag:""},{name:"Iga Świątek",tag:"[3]"},
+    {name:"Amanda Anisimova",tag:"[6]"},{name:"Lina Gjorcheska",tag:"Q"},{name:"Petra Marcinko",tag:""},{name:"Sofia Kenin",tag:""},
+    {name:"Irina-Camelia Begu",tag:""},{name:"Katie Swan",tag:"WC"},{name:"Kayla Day",tag:"Q"},{name:"Madison Keys",tag:"[26]"},
+    {name:"Sorana Cirstea",tag:"[17]"},{name:"Sara Bejlek",tag:""},{name:"Kimberly Birrell",tag:""},{name:"Alina Korneeva",tag:"Q"},
+    {name:"Camila Osorio",tag:""},{name:"Simona Waltert",tag:""},{name:"Ella Seidel",tag:""},{name:"Linda Noskova",tag:"[9]"},
+    {name:"Diana Shnaider",tag:"[15]"},{name:"Eva Lys",tag:""},{name:"Polina Kudermetova",tag:"Q"},{name:"Liudmila Samsonova",tag:""},
+    {name:"Katie Boulter",tag:""},{name:"Tyra Caterina Grant",tag:"Q"},{name:"Talia Gibson",tag:""},{name:"Marie Bouzkova",tag:"[21]"},
+    {name:"Elise Mertens",tag:"[25]"},{name:"Laura Siegemund",tag:""},{name:"Beatriz Haddad Maia",tag:""},{name:"Maria Timofeeva",tag:"Q"},
+    {name:"Elena-Gabriela Ruse",tag:""},{name:"Caty McNally",tag:""},{name:"Lois Boisson",tag:""},{name:"Elena Rybakina",tag:"[2]"},
   ];
+
+  const allPlayers = [...menPlayers, ...womenPlayers].sort((a,b) => a.name.localeCompare(b.name));
 
   // ── STATE ────────────────────────────────────────────────────────────────────
   const state = { name: null, kate: null, pigeon: null };
@@ -644,9 +606,13 @@
       ? players
       : players.filter(p => p.name.toLowerCase().includes(q));
 
-    if (matches.length === 0) { drop.classList.remove('open'); return; }
+    if (matches.length === 0) {
+      drop.innerHTML = `<div class="dropdown-empty">No player found — check spelling</div>`;
+      drop.classList.add('open');
+      return;
+    }
 
-    drop.innerHTML = matches.slice(0, 12).map((p, i) =>
+    drop.innerHTML = matches.slice(0, 15).map((p) =>
       `<div class="dropdown-item" data-name="${p.name}" onmousedown="selectPlayer('${inputId}','${dropId}','${p.name.replace(/'/g,"\\'")}')">
         ${p.name}${p.tag ? `<span class="seed-tag">${p.tag}</span>` : ''}
       </div>`
@@ -698,13 +664,18 @@
     const mWc      = val('mensWildcard');
     const wW       = val('womensWinner');
     const wWc      = val('womensWildcard');
-    const lPlayers = val('longestPlayers');
-    const lRound   = val('longestRound');
-    const lMins    = val('longestMins');
+    const lH       = val('longestHours');
+    const lM       = val('longestMinutes');
+    const lS       = val('longestSeconds');
+    const lPlayer  = val('longestPlayer');
     const sPlayer  = val('servePlayer');
     const sMph     = val('serveMph');
     const kate     = state.kate;
     const pigeon   = state.pigeon;
+
+    const durationStr = (lH || lM || lS)
+      ? `${lH || '0'}h ${lM || '0'}m ${lS || '0'}s`
+      : '—';
 
     const lines = [
       `🎾 THE WIMBLES 2026 — ${state.name.toUpperCase()}`,
@@ -718,7 +689,8 @@
       `  Wildcard ★: ${wWc || '—'}`,
       ``,
       `⚡ SPECIAL BETS`,
-      `  Longest Match: ${lPlayers || '—'} (${lRound || '?'}) · ${lMins ? lMins + ' mins' : '—'}`,
+      `  Longest Match Duration: ${durationStr}`,
+      `  Longest Match Player: ${lPlayer || '—'}`,
       `  Fastest Serve: ${sPlayer || '—'} · ${sMph ? sMph + ' mph' : '—'}`,
       ``,
       `👑 BONUS BETS`,
@@ -735,7 +707,8 @@
       <span>Women's Winner</span><strong>${wW || '—'}</strong>
       <br><span>Women's Wildcard ★</span><strong>${wWc || '—'}</strong>
       <br><br>
-      <span>Longest Match</span><strong>${lPlayers || '—'} (${lRound || '?'}) · ${lMins ? lMins + ' mins' : '—'}</strong>
+      <span>Longest Match Duration</span><strong>${durationStr}</strong>
+      <br><span>Longest Match Player</span><strong>${lPlayer || '—'}</strong>
       <br><span>Fastest Serve</span><strong>${sPlayer || '—'} · ${sMph ? sMph + ' mph' : '—'}</strong>
       <br><br>
       <span>Kate sighting?</span><strong>${kate === 'Y' ? 'Yes 👸' : kate === 'N' ? 'No 🚫' : '—'}</strong>
